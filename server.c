@@ -6,8 +6,19 @@
 /*   By: ozahdi <ozahdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/24 10:35:40 by ozahdi            #+#    #+#             */
-/*   Updated: 2024/02/24 10:35:54 by ozahdi           ###   ########.fr       */
+/*   Updated: 2024/02/25 10:51:47 by ozahdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minitalk.h"
+int main(int ac, char **av)
+{
+    int pid = getpid();
+    
+    printf("Server PID : %d", pid);
+    while (1)
+    {
+        usleep(500000);
+    }
+    
+}
