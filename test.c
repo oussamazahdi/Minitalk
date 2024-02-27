@@ -1,70 +1,97 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <signal.h>
+#include "minitalk.h"
+// int *con_bit(int c)
+// {
+//     int i;
+//     int x;
+//     int tmp;
+//     int *arr;
 
-// Signal handler for SIGUSR1
-void sigusr1_handler(int signum) {
-    printf("Received SIGUSR1 signal\n");
-}
-
-// Signal handler for SIGUSR2
-void sigusr2_handler(int signum) {
-    printf("Received SIGUSR2 signal\n");
-}
-
-int main() {
-    // Register signal handlers
-    signal(SIGUSR1, sigusr1_handler);
-    signal(SIGUSR2, sigusr2_handler);
-
-    // Print the process ID
-    int pid = getpid();
-    printf("My PID is: %d\n", pid);
-
-    // Simulate a long-running process
-    printf("Running...\n");
-    if (kill(pid, SIGUSR1) == 0) {
-        printf("SIGUSR1 signal sent successfully to PID %d\n", pid);
-    } else {
-        perror("Error sending SIGUSR1 signal");
-        return 1;
-    }
-    // while(1) {
-    //     kill (SIGUSR1, pid);
-    //     sleep(1);
-    // }
-
-    return 0;
-}
-// #include <stdio.h>
-// #include <stdlib.h>
-// #include <signal.h>
-
-// // Signal handler function for SIGINT
-// void sigint_handler(int signum) {
-//     printf("Caught SIGINT signal (Ctrl+C)\n");
-//     // Optionally, you can perform cleanup or other actions here
-//     exit(signum); // Exit the program with the signal number
-// }
-
-// int main() {
-//     // Define the new action for SIGINT
-//     struct sigaction new_action;
-//     new_action.sa_handler = sigint_handler;
-//     sigemptyset(&new_action.sa_mask); // Clear the signal mask
-//     new_action.sa_flags = 0; // No special flags
-
-//     // Install the new action for SIGINT
-//     if (sigaction(SIGINT, &new_action, NULL) == -1) {
-//         perror("sigaction");
-//         return 1;
+//     i = 8;
+//     x = 0;
+//     arr = malloc(8 * sizeof(int));
+//     while (i--)
+//     {
+//         tmp = ((c >> i) & 1);
+//         arr[x++] = tmp;
 //     }
-
-//     // Loop indefinitely
-//     printf("Press Ctrl+C to trigger SIGINT signal\n");
-//     while (1) {}
-
+//     return arr;
+// }
+// int main() {
+//     int *binaryRepresentation;
+//     binaryRepresentation = con_bit('a'); // Call con_bit with ASCII value of 'a'
+    
+//     printf("Binary representation of 'a': ");
+//     for (int i = 0; i < 8; i++) {
+//         printf("%d", binaryRepresentation[i]); // Print each bit of the binary representation
+//     }
+//     printf("\n");
+    
+//     free(binaryRepresentation); // Free the allocated memory to prevent memory leaks
 //     return 0;
 // }
+#include <stdio.h>
+#include <stdlib.h>
 
+int *con_bit(int c) {
+    int i = 8;
+    int x = 0;
+    int *arr = malloc(8 * sizeof(int));
+    while (i--) {
+        arr[x++] = ((c >> i) & 1);
+    }
+    return arr;
+}
+
+int ft_strlen(char *av) {
+    int i = 0;
+    while (av[i])
+        i++;
+    return i;
+}
+void ft_send(int *res, int pid)
+{
+    int *src;
+    src = res;
+    int i = 0;
+    while (src[i])
+    {
+        if(src[i] == 0)
+        {
+            if(!(kill(pid,SIGUSR1)))
+                exit(1);
+        }
+        else if(src[i] == 1)
+        {
+            if(!(kill(pid,SIGUSR2)))
+                    exit(1);
+        }
+        i++;
+    }
+}
+int main(int ac, char **av) {
+    if (ac == 3) {
+        int b = atoi(av[1]);
+        int len = ft_strlen(av[2]);
+        int *res = malloc(len * 8 * sizeof(int)); // Correct memory allocation
+        if (!res)
+            return 0;
+        int x = 0;
+        for (int i = 0; i < len; i++) {
+            int *tmp = con_bit(av[2][i]);
+            for (int j = 0; j < 8; j++) { // Correct copying of binary representation
+                res[x++] = tmp[j];
+            }
+            free(tmp); // Free tmp to prevent memory leak
+        }
+        // printf("Binary representation of '%s': ", av[2]);
+        // for (int i = 0; i < len * 8; i++) { // Correct loop condition
+        //     printf("%d", res[i]);
+        // }
+        // printf("\n");
+        ft_send(res,b);
+        free(res); // Free res to prevent memory leak
+    } else {
+        printf("You should to enter two arguments: Server PID & Message\n");
+    }
+    return 0;
+}
