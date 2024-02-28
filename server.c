@@ -6,57 +6,100 @@
 /*   By: ozahdi <ozahdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/09 18:24:44 by nsidqi            #+#    #+#             */
-/*   Updated: 2024/02/26 19:57:19 by ozahdi           ###   ########.fr       */
+/*   Updated: 2024/02/28 19:36:14 by ozahdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minitalk.h"
+// void ft_printy(int signum)
+// {
+//     static int arr[8];
+//     static int x;
+//     static int character;
+//     int  i;
 
-void	ft_helper(int sig, char *chara, int *index)
+//     x = 0;
+//     i = 0;
+//     character = 0;
+//     if(signum == SIGUSR1)
+//         arr[x++] = 0;
+//     else if(signum == SIGUSR2)
+//         arr[x++] = 1;
+//     if(x == 8)
+//     {
+//         while(i < 8) 
+//         {
+//             character |= arr[i] << (7 - i);
+//             i++;
+//         }
+//         write(1,&character,1);
+//         x = 0;
+//         character = 0;
+//     }
+// }
+// void signal_hundler(int signum,siginfo_t *info, void *content)
+// {
+//     static int arr[8];
+//     static int x = 0;
+//     static int character = 0;
+//     static int pid;
+//     int i = 0;
+//     (void)content;
+// 	if (!pid)
+// 		pid = info->si_pid;
+// 	if (pid != info->si_pid)
+// 	{
+// 		character = 0;
+// 		x = 0;
+// 		pid = 0;
+// 	}
+//     if(signum == SIGUSR1 || signum == SIGUSR2)
+//         ft_printy(signum);
+// }
+// int main()
+// {
+//     int pid = getpid();
+//     struct sigaction sa;
+//     sa.sa_sigaction = signal_hundler;
+//     sa.sa_flags = SA_SIGINFO;
+//     sigaction(SIGUSR1,&sa,NULL);
+//     sigaction(SIGUSR2,&sa,NULL);
+//     printf("server PID : %d\n",pid);
+//     while (1)
+//         pause();
+// }
+void signal_hundler(int signum)
 {
-	*chara = (*chara << 1) | (sig - SIGUSR1);
-	(*index)++;
-	if (*index == 8)
-	{
-		write(1, chara, 1);
-		*chara = 0;
-		*index = 0;
-	}
+    static int arr[8];
+    static int x = 0;
+    static int character = 0;
+    int i = 0;
+    if(signum == SIGUSR1)
+        arr[x++] = 0;
+    else if(signum == SIGUSR2)
+        arr[x++] = 1;
+    if(x == 8)
+    {
+        while(i < 8) 
+        {
+            character |= arr[i] << (7 - i);
+            i++;
+        }
+        write(1,&character,1);
+        x = 0;
+        character = 0;
+    }
 }
-
-void	ft_get(int sig, siginfo_t *info, void *content)
+int main()
 {
-	static char	chara;
-	static int	index;
-	static int	pid;
-
-	(void)content;
-	if (!pid)
-		pid = info->si_pid;
-	if (pid != info->si_pid)
-	{
-		chara = 0;
-		index = 0;
-		pid = 0;
-	}
-	if (sig == SIGUSR1 || sig == SIGUSR2)
-		ft_helper(sig, &chara, &index);
-}
-
-int	main(void)
-{
-	struct sigaction	sa;
-	int					pid;
-
-	sa.sa_sigaction = ft_get;
-	sa.sa_flags = SA_SIGINFO;
-	pid = getpid();
-	// ft_putnbr(pid);
-	printf("PID : %d\n",pid);
-	// write(1, "\n", 1);
-	sigaction(SIGUSR1, &sa, 0);
-	sigaction(SIGUSR2, &sa, 0);
-	while (1)
-		pause();
-	return (0);
+    int pid = getpid();
+    struct sigaction sa;
+    sa.sa_handler = signal_hundler;
+    sigemptyset(&sa.sa_mask);
+    sa.sa_flags = 0;
+    sigaction(SIGUSR1,&sa,NULL);
+    sigaction(SIGUSR2,&sa,NULL);
+    printf("server PID : %d\n",pid);
+    while (1)
+        pause();
 }

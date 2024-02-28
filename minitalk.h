@@ -6,7 +6,7 @@
 /*   By: ozahdi <ozahdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/23 14:22:44 by ozahdi            #+#    #+#             */
-/*   Updated: 2024/02/23 14:25:46 by ozahdi           ###   ########.fr       */
+/*   Updated: 2024/02/28 13:47:06 by ozahdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,5 +17,11 @@
 # include <unistd.h>
 # include <stdlib.h>
 # include <signal.h>
+
+
+
+#include <wchar.h>
+
+#include <locale.h>
 
 #endif
