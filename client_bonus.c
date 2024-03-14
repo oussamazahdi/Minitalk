@@ -1,27 +1,39 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   client.c                                           :+:      :+:    :+:   */
+/*   client_bonus.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ozahdi <ozahdi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/23 18:18:45 by ozahdi            #+#    #+#             */
-/*   Updated: 2024/03/11 08:12:07 by ozahdi           ###   ########.fr       */
+/*   Updated: 2024/03/11 10:09:59 by ozahdi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minitalk.h"
+#include "minitalk_bonus.h"
+
+int	g_len;
+
+static void	end_of_message_handler(int signum)
+{
+	static int	i;
+
+	if (signum == SIGUSR1)
+		i++;
+	if (i == g_len)
+		write(1, "Message has been received!\n", 28);
+}
 
 static int	*con_bit(int c)
 {
-	int	i;
-	int	x;
-	int	tmp;
-	int	*arr;
+	int		i;
+	int		x;
+	int		tmp;
+	int		*arr;
 
 	i = 8;
 	x = 0;
-	arr = malloc(8 * sizeof(int));
+	arr = malloc (8 * sizeof(int));
 	while (i--)
 	{
 		tmp = ((c >> i) & 1);
@@ -30,13 +42,11 @@ static int	*con_bit(int c)
 	return (arr);
 }
 
-static void	ft_send(int *res, int num, int len)
+static void	ft_send(int *res, int pid, int len)
 {
 	int		i;
-	pid_t	pid;
 
 	i = 0;
-	pid = num;
 	while (i < len)
 	{
 		if (res[i] == 0)
@@ -72,7 +82,6 @@ static int	*ft_fill(int *res, char *str)
 
 int	main(int ac, char **av)
 {
-	int	len;
 	int	*res;
 	int	pid;
 
@@ -84,11 +93,12 @@ int	main(int ac, char **av)
 			write(1, "Invalid PID!\n", 14);
 			return (-1);
 		}
-		len = ft_strlen(av[2]) * 8;
-		res = malloc(len * sizeof(int));
+		g_len = ft_strlen(av[2]);
+		res = malloc(g_len * 8 * sizeof(int));
+		signal(SIGUSR1, end_of_message_handler);
 		res = ft_fill(res, av[2]);
-		ft_send(res, pid, len);
-		free (res);
+		ft_send(res, pid, (g_len * 8));
+		free(res);
 	}
 	else
 		write(1, "You need to enter two arguments : Server PID & Message!", 56);
