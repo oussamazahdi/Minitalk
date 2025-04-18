@@ -5,7 +5,7 @@
 
 ## 📚 Overview
 
-Minitalk is a project at 42 School that involves creating a small client-server data exchange program using UNIX signals. The project focuses on implementing a communication system between two processes using only SIGUSR1 and SIGUSR2 signals.
+Minitalk is a project at 1337 coding School that involves creating a small client-server data exchange program using UNIX signals. The project focuses on implementing a communication system between two processes using only SIGUSR1 and SIGUSR2 signals.
 
 ## 🔍 Description
 
@@ -109,7 +109,7 @@ This implementation includes:
 - Only SIGUSR1 and SIGUSR2 signals can be used for communication
 - Global variables are forbidden
 - All memory allocated with `malloc` must be properly freed
-- The code must comply with the 42 Norm
+- The code must comply with the 1337 coding school Norm
 - Error handling must be thorough to avoid unexpected behavior
 
 ## 👤 Author
@@ -118,5 +118,5 @@ This implementation includes:
 
 ## 💬 Acknowledgements
 
-- 42 School for providing this challenging project
+- 1337 coding School for providing this challenging project
 - All fellow students who provided feedback and testing
